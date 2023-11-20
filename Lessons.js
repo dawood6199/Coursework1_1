@@ -11,4 +11,112 @@ let subjects = [
         "showSubject": true,
         "rating": 3
     },
-]
+    { 
+        "id": 1002,
+        "title": "Biology",
+        "description": "Biology is a natural science discipline that studies living things",
+        "Location": "Sharjah, United Arab Emirates",
+        "price": 150,
+        "image": "images/Biology.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 4
+    },
+    { 
+        "id": 1003,
+        "title": "Physics",
+        "description": " physics involves the study of everything in physical existence, from the smallest subatomic particles to the entire universe.",
+        "Location": "Abu Dhabi, United Arab Emirates",
+        "price": 200,
+        "image": "images/Physics.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 5
+    },
+    { 
+        "id": 1004,
+        "title": "Chemistry",
+        "description": "Chemistry is the study of matter and its interactions with other matter and energy",
+        "Location": "Ajman, United Arab Emirates",
+        "price": 175,
+        "image": "images/chemistry.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 4
+    },
+    { 
+        "id": 1005,
+        "title": "English",
+        "description": "English language arts includes reading, writing, listening, speaking, viewing, and producing texts",
+        "Location": "Umm Al-Quwain, United Arab Emirates",
+        "price": 120,
+        "image": "images/English.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 3
+    },
+    { 
+        "id": 1006,
+        "title": "Computer Science",
+        "description": "Computer science focuses on the development and testing of software and software systems.",
+        "Location": "Fujairah, United Arab Emirates",
+        "price": 170,
+        "image": "images/computer.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 5
+    },
+    { 
+        "id": 1007,
+        "title": "Business",
+        "description": "A field of study that deals with the principles of business, management, and economics.",
+        "Location": "Ras Al Khaimah, United Arab Emirates",
+        "price": 300,
+        "image": "images/Business.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 4
+    },
+    { 
+        "id": 1008,
+        "title": "Social Studies",
+        "description": "A field which deals with human behavior, relationships, resources, and institutions.",
+        "Location": "Sharjah, United Arab Emirates",
+        "price": 250,
+        "image": "images/social.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 3
+    },
+    { 
+        "id": 1009,
+        "title": "Music",
+        "description": "Vocal, instrumental, or mechanical sounds having rhythm, melody, or harmony. choral music. piano music.",
+        "Location": "Dubai, United Arab Emirates",
+        "price": 300,
+        "image": "images/Music.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 4
+    },
+    { 
+        "id": 1010,
+        "title": "Art",
+        "description": "A visual object or experience consciously created through an expression of skill or imagination.",
+        "Location": "Ras Al Khaimah, United Arab Emirates",
+        "price": 400,
+        "image": "images/Art.jpg",
+        "stock": 5,
+        "availableSpace": 5,
+        "showSubject": true,
+        "rating": 5
+    },
+];

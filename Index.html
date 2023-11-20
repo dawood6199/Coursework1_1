@@ -10,7 +10,38 @@
 </head>
 <body>
     <div id="app">
-       </div>
+        <header>
+            <h1>{{ AfterClassName }}</h1>
+        </header>
+        <main>
+            <!-- Subject Page -->
+            <div>
+                <figure>
+                    <img :src="subject.image" alt="Product Image">
+                </figure>
+                <h2>{{ subject.title }}</h2>
+                <p v-html="subject.description"></p>
+                <p>Location: {{ subject.Location }}</p>
+                <p>Price: {{ subject.price }} AED</p>
+                <p>Space: {{ subject.stock - getCartCount(subject.id) }}</p>
+                <button @click="addToCart(subject)" :disabled="!canAddToCart(subject)">
+                    Add to cart
+                </button>
+                <span v-if="subject.availableSpace === getCartCount(subject.id)">
+                    Space Unavailable
+                </span>
+                <span v-else-if="subject.availableSpace - getCartCount(subject.id) < 5">
+                    Only {{ subject.availableSpace - getCartCount(subject.id) }} Space Left!
+                </span>
+                <span v-else>
+                    Space Available
+                </span>
+                <div>
+                    <span v-for="n in subject.rating" :key="`star-${n}`">★</span>
+                    <span v-for="n in 5 - subject.rating" :key="`empty-star-${n}`">☆</span>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
-   
