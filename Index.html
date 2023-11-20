@@ -230,6 +230,43 @@ isValidInput(value, pattern) {
     return pattern.test(value);
 },
             },
+            computed: {
+                cartCount() {
+                    return this.cart.length || '';
+                },
+                isCartNotEmpty() {
+            return this.cart.length > 0;
+        },
+        filteredAndSortedSubjects() {
+        const query = this.searchQuery.toLowerCase();
+        const filteredSubjects = this.subjects.filter(subject => {
+            return (
+                subject.title.toLowerCase().includes(query) ||
+                subject.Location.toLowerCase().includes(query)
+            );
+        });
+
+        return filteredSubjects.sort((a, b) => {
+            const order = this.sortOrder === 'asc' ? 1 : -1;
+
+            if (this.sortAttribute === 'stock') {
+                return (a.stock - this.getCartCount(a.id)) * order - (b.stock - this.getCartCount(b.id)) * order;
+            } else {
+                if (a[this.sortAttribute] < b[this.sortAttribute]) {
+                    return -1 * order;
+                } else if (a[this.sortAttribute] > b[this.sortAttribute]) {
+                    return 1 * order;
+                }
+                return 0;
+            }
+        });
+    },
+
+        isOrderValid() {
+                return this.isValidInput(this.order.Name, this.orderFields[0].pattern) &&
+                       this.isValidInput(this.order.PhoneNumber, this.orderFields[1].pattern);
+            },
+            },
         });
     </script>
 </body>
