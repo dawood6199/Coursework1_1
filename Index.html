@@ -92,9 +92,28 @@
     <div id="app">
         <header>
             <h1>{{ AfterClassName }}</h1>
+            <input v-model="searchQuery" placeholder="Search lessons..." />
+            <button @click="toggleCheckout" class="checkout-btn" :disabled="!isCartNotEmpty">
+                {{ cartCount }}
+                <span class="fas fa-cart-plus"></span> Checkout
+            </button>
+            <select v-model="sortAttribute">
+                <option value="title">Subject</option>
+                <option value="Location">Location</option>
+                <option value="price">Price</option>
+                <option value="stock">Spaces</option>
+              </select>
+            
+              <select v-model="sortOrder">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
         </header>
+
         <main>
-            <!-- Subject Page -->
+            <!-- Product Page -->
+            <div v-if="showSubject" v-for="subject in filteredAndSortedSubjects" :key="subject.id">
+
                 <div>
                     <figure>
                         <img :src="subject.image" alt="Product Image">
@@ -155,6 +174,7 @@
             <button @click="placeOrder" :disabled="!isOrderValid">Place Order</button>
         </div>
     </div>
+
     <script type="text/javascript">
         let store = new Vue({
             el: '#app',
@@ -184,8 +204,8 @@
         if (!this.showSubject && newCart.length === 0) {
             this.showSubject = true;
         }
-                },
-            },
+    },
+},
             methods: {
                 addToCart(subject) {
     const existingIndex = this.cart.findIndex(item => item.id === subject.id);
