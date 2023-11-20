@@ -155,5 +155,39 @@
             <button @click="placeOrder" :disabled="!isOrderValid">Place Order</button>
         </div>
     </div>
+    <script type="text/javascript">
+        let store = new Vue({
+            el: '#app',
+            data: {
+                searchQuery: '',
+                AfterClassName: 'AFTER SCHOOL CLASSES',
+                showSubject: true,
+                sortAttribute: 'title', 
+                sortOrder: 'asc',
+                order: {
+                    Name: '',
+                    PhoneNumber: '',
+                },
+                orderFields: [
+    { label: 'Name', key: 'Name', type: 'text', pattern: /^[a-zA-Z]+$/ },
+    { label: 'Phone Number(10 Digits)', key: 'PhoneNumber', type: 'text', pattern: /^[0-9]{10}$/ },
+    
+],
+               
+                subjects: subjects,
+                cart: [],
+            },
+            watch: {
+        sortAttribute: 'handleSortChange',
+        sortOrder: 'handleSortChange',
+    cart: function(newCart) {
+        if (!this.showSubject && newCart.length === 0) {
+            this.showSubject = true;
+        }
+                },
+            },
+            // Additional Vue logic goes here
+        });
+    </script>
 </body>
 </html>
