@@ -140,6 +140,20 @@
                 </div>
             </div>
         </div>
+        <div v-if="!showSubject">
+            <h2>Checkout</h2>
+            <p v-for="field in orderFields" :key="field.label">
+                <strong>{{ field.label }}:</strong>
+                <input v-model="order[field.key]" :type="field.type" />
+            </p>
+            <p>
+                <input type="radio" v-for="method in orderMethods" :key="method" :id="method" :value="method" v-model="order.method">
+                <label :for="method">{{ method }}</label>
+            </p>
+            <h2>Order Information</h2>
+            <p v-for="field in orderFields" :key="field.label">{{ field.label }}: {{ order[field.key] }}</p>
+            <button @click="placeOrder" :disabled="!isOrderValid">Place Order</button>
+        </div>
     </div>
 </body>
 </html>
