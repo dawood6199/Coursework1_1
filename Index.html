@@ -186,7 +186,50 @@
         }
                 },
             },
-            // Additional Vue logic goes here
+            methods: {
+                addToCart(subject) {
+    const existingIndex = this.cart.findIndex(item => item.id === subject.id);
+
+    if (existingIndex !== -1) {
+        this.cart[existingIndex].quantity += 1;
+    } else {
+        this.cart.push({ id: subject.id, quantity: 1 });
+    }
+},
+                toggleCheckout() {
+                    this.showSubject = !this.showSubject;
+                },
+                placeOrder() {
+                    alert('Order Submitted! :D');
+                },
+                removeFromCart(lessonId) {
+    const index = this.cart.findIndex(item => item.id === lessonId);
+
+    if (index !== -1) {
+        const item = this.cart[index];
+        if (item.quantity > 1) {
+            item.quantity -= 1;
+        } else {
+            this.cart.splice(index, 1);
+        }
+    }
+},
+
+            getLessonById(lessonId) {
+                return this.subjects.find(lesson => lesson.id === lessonId);
+            },
+        
+                canAddToCart(subject) {
+                    return subject.availableSpace > this.getCartCount(subject.id);
+                },
+                getCartCount(id) {
+    const cartItem = this.cart.find(item => item.id === id);
+    return cartItem ? cartItem.quantity : 0;
+},
+isValidInput(value, pattern) {
+    return pattern.test(value);
+},
+            },
         });
     </script>
 </body>
