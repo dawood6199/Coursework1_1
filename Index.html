@@ -7,6 +7,86 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
     <script src="Lessons.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    
+    <style>
+        #app header {
+            text-align: center;
+            position: relative; 
+        }
+
+        #app button.checkout-btn {
+            position: absolute;
+            top: 10px; 
+            right: 10px; 
+        }
+
+        #app h1 {
+            margin: 0; 
+        }
+
+        #app main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around; 
+        }
+
+        #app main > div {
+            width: 400px; 
+            height: 500px; 
+            margin: 10px; 
+            box-sizing: border-box;
+            border: 1px solid #ccc; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+
+        #app main > div figure {
+            margin: 0; 
+            overflow: hidden; 
+        }
+
+        #app main > div img {
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-bottom: 1px solid #ccc; 
+        }
+
+        #app main > div h2 {
+            margin: 10px 0; 
+        }
+        .checkout-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .cart-item {
+            width: 400px;
+            height: 400px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cart-item figure {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .cart-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .cart-item h2 {
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -15,33 +95,51 @@
         </header>
         <main>
             <!-- Subject Page -->
-            <div>
-                <figure>
-                    <img :src="subject.image" alt="Product Image">
-                </figure>
-                <h2>{{ subject.title }}</h2>
-                <p v-html="subject.description"></p>
-                <p>Location: {{ subject.Location }}</p>
-                <p>Price: {{ subject.price }} AED</p>
-                <p>Space: {{ subject.stock - getCartCount(subject.id) }}</p>
-                <button @click="addToCart(subject)" :disabled="!canAddToCart(subject)">
-                    Add to cart
-                </button>
-                <span v-if="subject.availableSpace === getCartCount(subject.id)">
-                    Space Unavailable
-                </span>
-                <span v-else-if="subject.availableSpace - getCartCount(subject.id) < 5">
-                    Only {{ subject.availableSpace - getCartCount(subject.id) }} Space Left!
-                </span>
-                <span v-else>
-                    Space Available
-                </span>
                 <div>
-                    <span v-for="n in subject.rating" :key="`star-${n}`">★</span>
-                    <span v-for="n in 5 - subject.rating" :key="`empty-star-${n}`">☆</span>
+                    <figure>
+                        <img :src="subject.image" alt="Product Image">
+                    </figure>
+                    <h2>{{ subject.title }}</h2>
+                    <p v-html="subject.description"></p>
+                    <p>Location: {{ subject.Location }}</p>
+                    <p>Price: {{ subject.price }} AED</p>
+                    <p>Space: {{ subject.stock - getCartCount(subject.id) }}</p>
+                    <button @click="addToCart(subject)" :disabled="!canAddToCart(subject)">
+                        Add to cart
+                    </button>
+                    <span v-if="subject.availableSpace === getCartCount(subject.id)">
+                        Space Unavailable
+                    </span>
+                    <span v-else-if="subject.availableSpace - getCartCount(subject.id) < 5">
+                        Only {{ subject.availableSpace - getCartCount(subject.id) }} Space Left!
+                    </span>
+                    <span v-else>
+                        Space Available
+                    </span>
+                    <div>
+                        <span v-for="n in subject.rating" :key="`star-${n}`">★</span>
+                        <span v-for="n in 5 - subject.rating" :key="`empty-star-${n}`">☆</span>
+                    </div>
                 </div>
             </div>
         </main>
+        <!-- Cart Page -->
+        <div v-if="!showSubject">
+            <h2 v-if="cart.length > 0">Shopping Cart</h2>
+            <div v-if="cart.length === 0">Your cart is empty.</div>
+            <div class="checkout-items">
+                <div v-for="(cartItem, index) in cart" :key="cartItem.id" class="cart-item" :style="{ marginRight: index % 3 !== 2 ? '10px' : '0' }">
+                    <div>
+                        <figure>
+                            <img :src="getLessonById(cartItem.id).image" alt="Product Image">
+                        </figure>
+                        <h2>{{ getLessonById(cartItem.id).title }}</h2>
+                        <p>Quantity: {{ cartItem.quantity }} selected</p>
+                        <button @click="removeFromCart(cartItem.id)">Remove from Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
