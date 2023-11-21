@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After School Classes</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+    <script src="Lessons.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    
+    <style> 
+        #app header {
+            text-align: center; 
+            position: relative; 
+        }
+
+        #app button.checkout-btn {
+            position: absolute;
+            top: 10px; 
+            right: 10px; 
+        }
+
+        #app h1 {
+            margin: 0; 
+        }
+
+        #app main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around; 
+        }
+
+        #app main > div {
+            width: 400px; 
+            height: 500px; 
+            margin: 10px; 
+            box-sizing: border-box;
+            border: 1px solid #ccc; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+
+        #app main > div figure {
+            margin: 0; 
+            overflow: hidden; 
+        }
+
+        #app main > div img {
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-bottom: 1px solid #ccc; 
+        }
+
+        #app main > div h2 {
+            margin: 10px 0; 
+        }
+        .checkout-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .cart-item {
+            width: 400px;
+            height: 400px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+             
+        .cart-item figure {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .cart-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .cart-item h2 {
+            margin: 10px 0;
+        }
+    </style>
+ </head>
+ <body>
+     <div id="app">
+        <header>
+            <h1>{{ AfterClassName }}</h1>
+            <input v-model="searchQuery" placeholder="Search lessons..." />
+            <button @click="toggleCheckout" class="checkout-btn" :disabled="!isCartNotEmpty">
+                {{ cartCount }}
+                <span class="fas fa-cart-plus"></span> Checkout
+            </button>
+            <select v-model="sortAttribute">
+                <option value="title">Subject</option>
+                <option value="Location">Location</option>
+                <option value="price">Price</option>
+                <option value="stock">Spaces</option>
+              </select>
+            
+              <select v-model="sortOrder">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+        </header>
+
+        <main>
+            <!-- Product Page -->
+            <div v-if="showSubject" v-for="subject in filteredAndSortedSubjects" :key="subject.id">
+
+                <div>
+                    <figure>
+                        <img :src="subject.image" alt="Product Image">
+                    </figure>
+                    <h2>{{ subject.title }}</h2>
+                    <p v-html="subject.description"></p>
+                    <p>Location: {{ subject.Location }}</p>
+                    <p>Price: {{ subject.price }} AED</p>
+                    <p>Space: {{ subject.stock - getCartCount(subject.id) }}</p>
+                    <button @click="addToCart(subject)" :disabled="!canAddToCart(subject)">
+                        Add to cart
+                    </button>
+                    <span v-if="subject.availableSpace === getCartCount(subject.id)">
+                        Space Unavailable
+                    </span>
+                    <span v-else-if="subject.availableSpace - getCartCount(subject.id) < 5">
+                        Only {{ subject.availableSpace - getCartCount(subject.id) }} Space Left!
+                    </span>
+                    <span v-else>
+                        Space Available
+                    </span>
+                    <div>
+                        <span v-for="n in subject.rating" :key="`star-${n}`">★</span>
+                        <span v-for="n in 5 - subject.rating" :key="`empty-star-${n}`">☆</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- Cart Page -->
+        <div v-if="!showSubject">
+            <h2 v-if="cart.length > 0">Shopping Cart</h2>
+            <div v-if="cart.length === 0">Your cart is empty.</div>
+            <div class="checkout-items">
+                <div v-for="(cartItem, index) in cart" :key="cartItem.id" class="cart-item" :style="{ marginRight: index % 3 !== 2 ? '10px' : '0' }">
+                    <div>
+                        <figure>
+                            <img :src="getLessonById(cartItem.id).image" alt="Product Image">
+                        </figure>
+                        <h2>{{ getLessonById(cartItem.id).title }}</h2>
+                        <p>Quantity: {{ cartItem.quantity }} selected</p>
+                        <button @click="removeFromCart(cartItem.id)">Remove from Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="!showSubject">
+            <h2>Checkout</h2>
+            <p v-for="field in orderFields" :key="field.label">
+                <strong>{{ field.label }}:</strong>
+                <input v-model="order[field.key]" :type="field.type" />
+            </p>
+            <p>
+                <input type="radio" v-for="method in orderMethods" :key="method" :id="method" :value="method" v-model="order.method">
+                <label :for="method">{{ method }}</label>
+            </p>
+            <h2>Order Information</h2>
+            <p v-for="field in orderFields" :key="field.label">{{ field.label }}: {{ order[field.key] }}</p>
+            <button @click="placeOrder" :disabled="!isOrderValid">Place Order</button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        let store = new Vue({
+            el: '#app',
+            data: {
+                searchQuery: '',
+                AfterClassName: 'AFTER SCHOOL CLASSES',
+                showSubject: true,
+                sortAttribute: 'title', 
+                sortOrder: 'asc',
+                order: {
+                    Name: '',
+                    PhoneNumber: '',
+                },
+                orderFields: [
+    { label: 'Name', key: 'Name', type: 'text', pattern: /^[a-zA-Z]+$/ },
+    { label: 'Phone Number(10 Digits)', key: 'PhoneNumber', type: 'text', pattern: /^[0-9]{10}$/ },
+    
+],
+               
+                subjects: subjects,
+                cart: [],
+            },
+            watch: {
+        sortAttribute: 'handleSortChange',
+        sortOrder: 'handleSortChange',
+    cart: function(newCart) {
+        if (!this.showSubject && newCart.length === 0) {
+            this.showSubject = true;
+        }
+    },
+},
+            methods: {
+                addToCart(subject) {
+    const existingIndex = this.cart.findIndex(item => item.id === subject.id);
+
+    if (existingIndex !== -1) {
+        this.cart[existingIndex].quantity += 1;
+    } else {
+        this.cart.push({ id: subject.id, quantity: 1 });
+    }
+},
+                toggleCheckout() {
+                    this.showSubject = !this.showSubject;
+                },
+                placeOrder() {
+                    alert('Order Submitted! :D');
+                },
+                removeFromCart(lessonId) {
+    const index = this.cart.findIndex(item => item.id === lessonId);
+
+    if (index !== -1) {
+        const item = this.cart[index];
+        if (item.quantity > 1) {
+            item.quantity -= 1;
+        } else {
+            this.cart.splice(index, 1);
+        }
+    }
+},
+
+            getLessonById(lessonId) {
+                return this.subjects.find(lesson => lesson.id === lessonId);
+            },
+        
+                canAddToCart(subject) {
+                    return subject.availableSpace > this.getCartCount(subject.id);
+                },
+                getCartCount(id) {
+    const cartItem = this.cart.find(item => item.id === id);
+    return cartItem ? cartItem.quantity : 0;
+},
+isValidInput(value, pattern) {
+    return pattern.test(value);
+},
+            },
+            computed: {
+                cartCount() {
+                    return this.cart.length || '';
+                },
+                isCartNotEmpty() {
+            return this.cart.length > 0;
+        },
+        filteredAndSortedSubjects() {
+        const query = this.searchQuery.toLowerCase();
+        const filteredSubjects = this.subjects.filter(subject => {
+            return (
+                subject.title.toLowerCase().includes(query) ||
+                subject.Location.toLowerCase().includes(query)
+            );
+        });
+
+        return filteredSubjects.sort((a, b) => {
+            const order = this.sortOrder === 'asc' ? 1 : -1;
+
+            if (this.sortAttribute === 'stock') {
+                return (a.stock - this.getCartCount(a.id)) * order - (b.stock - this.getCartCount(b.id)) * order;
+            } else {
+                if (a[this.sortAttribute] < b[this.sortAttribute]) {
+                    return -1 * order;
+                } else if (a[this.sortAttribute] > b[this.sortAttribute]) {
+                    return 1 * order;
+                }
+                return 0;
+            }
+        });
+    },
+
+        isOrderValid() {
+                return this.isValidInput(this.order.Name, this.orderFields[0].pattern) &&
+                       this.isValidInput(this.order.PhoneNumber, this.orderFields[1].pattern);
+            },
+            },
+        });
+    </script>
+</body>
+</html>
